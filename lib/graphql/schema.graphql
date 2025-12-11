@@ -52,17 +52,20 @@ enum Theme {
   AUTO
 }
 
-# Queries
-extend type Query {
-  getProfile: User!
-}
-
-# Mutations
-extend type Mutation {
-  updatePreferences(input: UserPreferencesInput!): User!
-}
-
 # Inputs
+input CreateUserInput {
+  email: String!
+  name: String
+  avatar: String
+  preferences: UserPreferencesInput
+}
+
+input UpdateUserInput {
+  name: String
+  avatar: String
+  preferences: UserPreferencesInput
+}
+
 input UserPreferencesInput {
   notifications: NotificationPreferencesInput
   reader: ReaderPreferencesInput
@@ -80,21 +83,38 @@ input ReaderPreferencesInput {
   theme: Theme
 }
 
+# Queries
+extend type Query {
+  user(id: ID!): User
+  users(limit: Int, offset: Int): [User!]!
+  getProfile: User!
+}
+
+# Mutations
+extend type Mutation {
+  createUser(input: CreateUserInput!): User!
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+  deleteUser(id: ID!): Boolean!
+  updatePreferences(input: UserPreferencesInput!): User!
+}
+
 # Content Domain - Manga & Chapters
 
 type Manga {
   id: ID!
+  slug: String!
   title: String!
   altTitles: [String!]!
   description: String
-  coverImage: String
+  cover: String
   status: MangaStatus!
   genres: [String!]!
   authors: [String!]!
   year: Int
-  sourceId: ID!
-  sourceMangaId: String!
-  sourceUrl: String!
+  totalChapters: Int
+  isNsfw: Boolean!
+  sourceName: String!
+  sourceId: String!
   createdAt: String!
   updatedAt: String!
 }
@@ -102,7 +122,6 @@ type Manga {
 type Chapter {
   id: ID!
   mangaId: ID!
-  sourceId: ID!
   number: Float!
   title: String
   releaseDate: String
@@ -127,31 +146,87 @@ enum MangaStatus {
   CANCELLED
 }
 
+# Inputs
+input CreateMangaInput {
+  slug: String!
+  title: String!
+  altTitles: [String!]!
+  description: String
+  cover: String
+  status: MangaStatus!
+  genres: [String!]!
+  authors: [String!]!
+  year: Int
+  totalChapters: Int
+  isNsfw: Boolean!
+  sourceName: String!
+  sourceId: String!
+}
+
+input UpdateMangaInput {
+  slug: String
+  title: String
+  altTitles: [String!]
+  description: String
+  cover: String
+  status: MangaStatus
+  genres: [String!]
+  authors: [String!]
+  year: Int
+  totalChapters: Int
+  isNsfw: Boolean
+  sourceName: String
+  sourceId: String
+}
+
+input CreateChapterInput {
+  mangaId: ID!
+  number: Float!
+  title: String
+  releaseDate: String
+  images: [ChapterImageInput!]!
+}
+
+input UpdateChapterInput {
+  number: Float
+  title: String
+  releaseDate: String
+  images: [ChapterImageInput!]
+}
+
+input ChapterImageInput {
+  url: String!
+  originalUrl: String!
+  page: Int!
+  width: Int
+  height: Int
+}
+
+input MangaFilters {
+  status: MangaStatus
+  genres: [String!]
+  isNsfw: Boolean
+  year: Int
+}
+
 # Queries
 extend type Query {
+  manga(id: ID): Manga
+  mangaBySlug(slug: String!): Manga
+  mangas(limit: Int, offset: Int, filters: MangaFilters): [Manga!]!
   searchManga(query: String!): [Manga!]!
-  getManga(id: ID!): Manga
-  getChapters(mangaId: ID!): [Chapter!]!
+  chapter(id: ID!): Chapter
+  chapters(mangaId: ID!, limit: Int, offset: Int): [Chapter!]!
 }
 
 # Mutations
 extend type Mutation {
   createManga(input: CreateMangaInput!): Manga!
-}
-
-# Inputs
-input CreateMangaInput {
-  title: String!
-  altTitles: [String!]!
-  description: String
-  coverImage: String
-  status: MangaStatus!
-  genres: [String!]!
-  authors: [String!]!
-  year: Int
-  sourceId: ID!
-  sourceMangaId: String!
-  sourceUrl: String!
+  updateManga(id: ID!, input: UpdateMangaInput!): Manga!
+  deleteManga(id: ID!): Boolean!
+  createChapter(input: CreateChapterInput!): Chapter!
+  updateChapter(id: ID!, input: UpdateChapterInput!): Chapter!
+  deleteChapter(id: ID!): Boolean!
 }
 
 # Library Domain - User's Reading Progress
@@ -163,9 +238,8 @@ type LibraryEntry {
   rating: Int
   notes: String
   currentChapterId: ID
-  currentChapterNumber: Float
   lastReadAt: String
-  addedAt: String!
+  createdAt: String!
   updatedAt: String!
 }
 
@@ -188,10 +262,18 @@ enum ReadingStatus {
   ON_HOLD
 }
 
+# Inputs
+input UpdateLibraryEntryInput {
+  status: ReadingStatus
+  rating: Int
+  notes: String
+}
+
 # Queries
 extend type Query {
-  getLibrary: [LibraryEntry!]!
-  getReadingHistory(limit: Int): [ReadingHistory!]!
+  libraryEntry(userId: ID!, mangaId: ID!): LibraryEntry
+  library(userId: ID!): [LibraryEntry!]!
+  readingHistory(userId: ID!, limit: Int): [ReadingHistory!]!
 }
 
 # Mutations
@@ -199,13 +281,6 @@ extend type Mutation {
   addToLibrary(mangaId: ID!): LibraryEntry!
   updateLibraryEntry(mangaId: ID!, input: UpdateLibraryEntryInput!): LibraryEntry!
   removeFromLibrary(mangaId: ID!): Boolean!
-  updateProgress(mangaId: ID!, chapterId: ID!): LibraryEntry!
   markChapterAsRead(chapterId: ID!): ReadingHistory!
-}
-
-# Inputs
-input UpdateLibraryEntryInput {
-  status: ReadingStatus
-  rating: Int
-  notes: String
+  updateReadingProgress(mangaId: ID!, chapterId: ID!): LibraryEntry!
 }

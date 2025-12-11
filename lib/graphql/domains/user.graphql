@@ -39,17 +39,20 @@ enum Theme {
   AUTO
 }
 
-# Queries
-extend type Query {
-  getProfile: User!
-}
-
-# Mutations
-extend type Mutation {
-  updatePreferences(input: UserPreferencesInput!): User!
-}
-
 # Inputs
+input CreateUserInput {
+  email: String!
+  name: String
+  avatar: String
+  preferences: UserPreferencesInput
+}
+
+input UpdateUserInput {
+  name: String
+  avatar: String
+  preferences: UserPreferencesInput
+}
+
 input UserPreferencesInput {
   notifications: NotificationPreferencesInput
   reader: ReaderPreferencesInput
@@ -65,4 +68,19 @@ input ReaderPreferencesInput {
   imageWidth: ImageWidth
   spacing: Int
   theme: Theme
+}
+
+# Queries
+extend type Query {
+  user(id: ID!): User
+  users(limit: Int, offset: Int): [User!]!
+  getProfile: User!
+}
+
+# Mutations
+extend type Mutation {
+  createUser(input: CreateUserInput!): User!
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+  deleteUser(id: ID!): Boolean!
+  updatePreferences(input: UserPreferencesInput!): User!
 }

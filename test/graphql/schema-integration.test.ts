@@ -91,7 +91,7 @@ describe('Schema Integration', () => {
     // Should have fields from all domains
     expect(Object.keys(queryFields || {})).toContain('getProfile');
     expect(Object.keys(queryFields || {})).toContain('searchManga');
-    expect(Object.keys(queryFields || {})).toContain('getLibrary');
+    expect(Object.keys(queryFields || {})).toContain('library');
 
     expect(Object.keys(mutationFields || {})).toContain('updatePreferences');
     expect(Object.keys(mutationFields || {})).toContain('createManga');

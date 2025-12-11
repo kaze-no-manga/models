@@ -27,10 +27,11 @@ describe('Content Domain Schema', () => {
 
     const fields = mangaType.getFields();
     expect(fields.id).toBeDefined();
+    expect(fields.slug).toBeDefined();
     expect(fields.title).toBeDefined();
+    expect(fields.sourceName).toBeDefined();
     expect(fields.sourceId).toBeDefined();
-    expect(fields.sourceMangaId).toBeDefined();
-    expect(fields.sourceUrl).toBeDefined();
+    expect(fields.isNsfw).toBeDefined();
   });
 
   it('should contain Chapter type', () => {
@@ -55,8 +56,9 @@ describe('Content Domain Schema', () => {
     const fields = queryType?.getFields();
 
     expect(fields?.searchManga).toBeDefined();
-    expect(fields?.getManga).toBeDefined();
-    expect(fields?.getChapters).toBeDefined();
+    expect(fields?.manga).toBeDefined();
+    expect(fields?.mangaBySlug).toBeDefined();
+    expect(fields?.chapters).toBeDefined();
   });
 
   it('should contain MangaStatus enum', () => {

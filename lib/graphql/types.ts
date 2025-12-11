@@ -28,7 +28,6 @@ export type Chapter = {
   mangaId: Scalars['ID']['output'];
   number: Scalars['Float']['output'];
   releaseDate?: Maybe<Scalars['String']['output']>;
-  sourceId: Scalars['ID']['output'];
   title?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['String']['output'];
 };
@@ -42,18 +41,43 @@ export type ChapterImage = {
   width?: Maybe<Scalars['Int']['output']>;
 };
 
+export type ChapterImageInput = {
+  height?: InputMaybe<Scalars['Int']['input']>;
+  originalUrl: Scalars['String']['input'];
+  page: Scalars['Int']['input'];
+  url: Scalars['String']['input'];
+  width?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type CreateChapterInput = {
+  images: Array<ChapterImageInput>;
+  mangaId: Scalars['ID']['input'];
+  number: Scalars['Float']['input'];
+  releaseDate?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type CreateMangaInput = {
   altTitles: Array<Scalars['String']['input']>;
   authors: Array<Scalars['String']['input']>;
-  coverImage?: InputMaybe<Scalars['String']['input']>;
+  cover?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   genres: Array<Scalars['String']['input']>;
-  sourceId: Scalars['ID']['input'];
-  sourceMangaId: Scalars['String']['input'];
-  sourceUrl: Scalars['String']['input'];
+  isNsfw: Scalars['Boolean']['input'];
+  slug: Scalars['String']['input'];
+  sourceId: Scalars['String']['input'];
+  sourceName: Scalars['String']['input'];
   status: MangaStatus;
   title: Scalars['String']['input'];
+  totalChapters?: InputMaybe<Scalars['Int']['input']>;
   year?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type CreateUserInput = {
+  avatar?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  preferences?: InputMaybe<UserPreferencesInput>;
 };
 
 export enum ImageWidth {
@@ -63,9 +87,8 @@ export enum ImageWidth {
 
 export type LibraryEntry = {
   __typename?: 'LibraryEntry';
-  addedAt: Scalars['String']['output'];
+  createdAt: Scalars['String']['output'];
   currentChapterId?: Maybe<Scalars['ID']['output']>;
-  currentChapterNumber?: Maybe<Scalars['Float']['output']>;
   lastReadAt?: Maybe<Scalars['String']['output']>;
   mangaId: Scalars['ID']['output'];
   notes?: Maybe<Scalars['String']['output']>;
@@ -79,18 +102,27 @@ export type Manga = {
   __typename?: 'Manga';
   altTitles: Array<Scalars['String']['output']>;
   authors: Array<Scalars['String']['output']>;
-  coverImage?: Maybe<Scalars['String']['output']>;
+  cover?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
   genres: Array<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  sourceId: Scalars['ID']['output'];
-  sourceMangaId: Scalars['String']['output'];
-  sourceUrl: Scalars['String']['output'];
+  isNsfw: Scalars['Boolean']['output'];
+  slug: Scalars['String']['output'];
+  sourceId: Scalars['String']['output'];
+  sourceName: Scalars['String']['output'];
   status: MangaStatus;
   title: Scalars['String']['output'];
+  totalChapters?: Maybe<Scalars['Int']['output']>;
   updatedAt: Scalars['String']['output'];
   year?: Maybe<Scalars['Int']['output']>;
+};
+
+export type MangaFilters = {
+  genres?: InputMaybe<Array<Scalars['String']['input']>>;
+  isNsfw?: InputMaybe<Scalars['Boolean']['input']>;
+  status?: InputMaybe<MangaStatus>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export enum MangaStatus {
@@ -104,20 +136,48 @@ export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']['output']>;
   addToLibrary: LibraryEntry;
+  createChapter: Chapter;
   createManga: Manga;
+  createUser: User;
+  deleteChapter: Scalars['Boolean']['output'];
+  deleteManga: Scalars['Boolean']['output'];
+  deleteUser: Scalars['Boolean']['output'];
   markChapterAsRead: ReadingHistory;
   removeFromLibrary: Scalars['Boolean']['output'];
+  updateChapter: Chapter;
   updateLibraryEntry: LibraryEntry;
+  updateManga: Manga;
   updatePreferences: User;
-  updateProgress: LibraryEntry;
+  updateReadingProgress: LibraryEntry;
+  updateUser: User;
 };
 
 export type MutationAddToLibraryArgs = {
   mangaId: Scalars['ID']['input'];
 };
 
+export type MutationCreateChapterArgs = {
+  input: CreateChapterInput;
+};
+
 export type MutationCreateMangaArgs = {
   input: CreateMangaInput;
+};
+
+export type MutationCreateUserArgs = {
+  input: CreateUserInput;
+};
+
+export type MutationDeleteChapterArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type MutationDeleteMangaArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type MutationDeleteUserArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export type MutationMarkChapterAsReadArgs = {
@@ -128,18 +188,33 @@ export type MutationRemoveFromLibraryArgs = {
   mangaId: Scalars['ID']['input'];
 };
 
+export type MutationUpdateChapterArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateChapterInput;
+};
+
 export type MutationUpdateLibraryEntryArgs = {
   input: UpdateLibraryEntryInput;
   mangaId: Scalars['ID']['input'];
+};
+
+export type MutationUpdateMangaArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateMangaInput;
 };
 
 export type MutationUpdatePreferencesArgs = {
   input: UserPreferencesInput;
 };
 
-export type MutationUpdateProgressArgs = {
+export type MutationUpdateReadingProgressArgs = {
   chapterId: Scalars['ID']['input'];
   mangaId: Scalars['ID']['input'];
+};
+
+export type MutationUpdateUserArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateUserInput;
 };
 
 export type NotificationPreferences = {
@@ -158,28 +233,69 @@ export type NotificationPreferencesInput = {
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']['output']>;
-  getChapters: Array<Chapter>;
-  getLibrary: Array<LibraryEntry>;
-  getManga?: Maybe<Manga>;
+  chapter?: Maybe<Chapter>;
+  chapters: Array<Chapter>;
   getProfile: User;
-  getReadingHistory: Array<ReadingHistory>;
+  library: Array<LibraryEntry>;
+  libraryEntry?: Maybe<LibraryEntry>;
+  manga?: Maybe<Manga>;
+  mangaBySlug?: Maybe<Manga>;
+  mangas: Array<Manga>;
+  readingHistory: Array<ReadingHistory>;
   searchManga: Array<Manga>;
+  user?: Maybe<User>;
+  users: Array<User>;
 };
 
-export type QueryGetChaptersArgs = {
-  mangaId: Scalars['ID']['input'];
-};
-
-export type QueryGetMangaArgs = {
+export type QueryChapterArgs = {
   id: Scalars['ID']['input'];
 };
 
-export type QueryGetReadingHistoryArgs = {
+export type QueryChaptersArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
+  mangaId: Scalars['ID']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type QueryLibraryArgs = {
+  userId: Scalars['ID']['input'];
+};
+
+export type QueryLibraryEntryArgs = {
+  mangaId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+export type QueryMangaArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type QueryMangaBySlugArgs = {
+  slug: Scalars['String']['input'];
+};
+
+export type QueryMangasArgs = {
+  filters?: InputMaybe<MangaFilters>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type QueryReadingHistoryArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  userId: Scalars['ID']['input'];
 };
 
 export type QuerySearchMangaArgs = {
   query: Scalars['String']['input'];
+};
+
+export type QueryUserArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryUsersArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type ReaderPreferences = {
@@ -220,10 +336,39 @@ export enum Theme {
   Light = 'LIGHT',
 }
 
+export type UpdateChapterInput = {
+  images?: InputMaybe<Array<ChapterImageInput>>;
+  number?: InputMaybe<Scalars['Float']['input']>;
+  releaseDate?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdateLibraryEntryInput = {
   notes?: InputMaybe<Scalars['String']['input']>;
   rating?: InputMaybe<Scalars['Int']['input']>;
   status?: InputMaybe<ReadingStatus>;
+};
+
+export type UpdateMangaInput = {
+  altTitles?: InputMaybe<Array<Scalars['String']['input']>>;
+  authors?: InputMaybe<Array<Scalars['String']['input']>>;
+  cover?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  genres?: InputMaybe<Array<Scalars['String']['input']>>;
+  isNsfw?: InputMaybe<Scalars['Boolean']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  sourceId?: InputMaybe<Scalars['String']['input']>;
+  sourceName?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<MangaStatus>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  totalChapters?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type UpdateUserInput = {
+  avatar?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  preferences?: InputMaybe<UserPreferencesInput>;
 };
 
 export type User = {
@@ -348,13 +493,17 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Chapter: ResolverTypeWrapper<Chapter>;
   ChapterImage: ResolverTypeWrapper<ChapterImage>;
+  ChapterImageInput: ChapterImageInput;
+  CreateChapterInput: CreateChapterInput;
   CreateMangaInput: CreateMangaInput;
+  CreateUserInput: CreateUserInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   ImageWidth: ImageWidth;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LibraryEntry: ResolverTypeWrapper<LibraryEntry>;
   Manga: ResolverTypeWrapper<Manga>;
+  MangaFilters: MangaFilters;
   MangaStatus: MangaStatus;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   NotificationPreferences: ResolverTypeWrapper<NotificationPreferences>;
@@ -366,7 +515,10 @@ export type ResolversTypes = {
   ReadingStatus: ReadingStatus;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Theme: Theme;
+  UpdateChapterInput: UpdateChapterInput;
   UpdateLibraryEntryInput: UpdateLibraryEntryInput;
+  UpdateMangaInput: UpdateMangaInput;
+  UpdateUserInput: UpdateUserInput;
   User: ResolverTypeWrapper<User>;
   UserPreferences: ResolverTypeWrapper<UserPreferences>;
   UserPreferencesInput: UserPreferencesInput;
@@ -377,12 +529,16 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Chapter: Chapter;
   ChapterImage: ChapterImage;
+  ChapterImageInput: ChapterImageInput;
+  CreateChapterInput: CreateChapterInput;
   CreateMangaInput: CreateMangaInput;
+  CreateUserInput: CreateUserInput;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   LibraryEntry: LibraryEntry;
   Manga: Manga;
+  MangaFilters: MangaFilters;
   Mutation: Record<PropertyKey, never>;
   NotificationPreferences: NotificationPreferences;
   NotificationPreferencesInput: NotificationPreferencesInput;
@@ -391,7 +547,10 @@ export type ResolversParentTypes = {
   ReaderPreferencesInput: ReaderPreferencesInput;
   ReadingHistory: ReadingHistory;
   String: Scalars['String']['output'];
+  UpdateChapterInput: UpdateChapterInput;
   UpdateLibraryEntryInput: UpdateLibraryEntryInput;
+  UpdateMangaInput: UpdateMangaInput;
+  UpdateUserInput: UpdateUserInput;
   User: User;
   UserPreferences: UserPreferences;
   UserPreferencesInput: UserPreferencesInput;
@@ -407,7 +566,6 @@ export type ChapterResolvers<
   mangaId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   number?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   releaseDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  sourceId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
@@ -427,9 +585,8 @@ export type LibraryEntryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['LibraryEntry'] = ResolversParentTypes['LibraryEntry'],
 > = {
-  addedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   currentChapterId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  currentChapterNumber?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   lastReadAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   mangaId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -445,16 +602,18 @@ export type MangaResolvers<
 > = {
   altTitles?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   authors?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  coverImage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  cover?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   genres?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  sourceId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  sourceMangaId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  sourceUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isNsfw?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sourceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sourceName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['MangaStatus'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  totalChapters?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   year?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
 };
@@ -470,11 +629,41 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationAddToLibraryArgs, 'mangaId'>
   >;
+  createChapter?: Resolver<
+    ResolversTypes['Chapter'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateChapterArgs, 'input'>
+  >;
   createManga?: Resolver<
     ResolversTypes['Manga'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateMangaArgs, 'input'>
+  >;
+  createUser?: Resolver<
+    ResolversTypes['User'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateUserArgs, 'input'>
+  >;
+  deleteChapter?: Resolver<
+    ResolversTypes['Boolean'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteChapterArgs, 'id'>
+  >;
+  deleteManga?: Resolver<
+    ResolversTypes['Boolean'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteMangaArgs, 'id'>
+  >;
+  deleteUser?: Resolver<
+    ResolversTypes['Boolean'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteUserArgs, 'id'>
   >;
   markChapterAsRead?: Resolver<
     ResolversTypes['ReadingHistory'],
@@ -488,11 +677,23 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationRemoveFromLibraryArgs, 'mangaId'>
   >;
+  updateChapter?: Resolver<
+    ResolversTypes['Chapter'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateChapterArgs, 'id' | 'input'>
+  >;
   updateLibraryEntry?: Resolver<
     ResolversTypes['LibraryEntry'],
     ParentType,
     ContextType,
     RequireFields<MutationUpdateLibraryEntryArgs, 'input' | 'mangaId'>
+  >;
+  updateManga?: Resolver<
+    ResolversTypes['Manga'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateMangaArgs, 'id' | 'input'>
   >;
   updatePreferences?: Resolver<
     ResolversTypes['User'],
@@ -500,11 +701,17 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationUpdatePreferencesArgs, 'input'>
   >;
-  updateProgress?: Resolver<
+  updateReadingProgress?: Resolver<
     ResolversTypes['LibraryEntry'],
     ParentType,
     ContextType,
-    RequireFields<MutationUpdateProgressArgs, 'chapterId' | 'mangaId'>
+    RequireFields<MutationUpdateReadingProgressArgs, 'chapterId' | 'mangaId'>
+  >;
+  updateUser?: Resolver<
+    ResolversTypes['User'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateUserArgs, 'id' | 'input'>
   >;
 };
 
@@ -523,25 +730,54 @@ export type QueryResolvers<
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
 > = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  getChapters?: Resolver<
+  chapter?: Resolver<
+    Maybe<ResolversTypes['Chapter']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryChapterArgs, 'id'>
+  >;
+  chapters?: Resolver<
     Array<ResolversTypes['Chapter']>,
     ParentType,
     ContextType,
-    RequireFields<QueryGetChaptersArgs, 'mangaId'>
+    RequireFields<QueryChaptersArgs, 'mangaId'>
   >;
-  getLibrary?: Resolver<Array<ResolversTypes['LibraryEntry']>, ParentType, ContextType>;
-  getManga?: Resolver<
+  getProfile?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  library?: Resolver<
+    Array<ResolversTypes['LibraryEntry']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryLibraryArgs, 'userId'>
+  >;
+  libraryEntry?: Resolver<
+    Maybe<ResolversTypes['LibraryEntry']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryLibraryEntryArgs, 'mangaId' | 'userId'>
+  >;
+  manga?: Resolver<
     Maybe<ResolversTypes['Manga']>,
     ParentType,
     ContextType,
-    RequireFields<QueryGetMangaArgs, 'id'>
+    Partial<QueryMangaArgs>
   >;
-  getProfile?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  getReadingHistory?: Resolver<
+  mangaBySlug?: Resolver<
+    Maybe<ResolversTypes['Manga']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryMangaBySlugArgs, 'slug'>
+  >;
+  mangas?: Resolver<
+    Array<ResolversTypes['Manga']>,
+    ParentType,
+    ContextType,
+    Partial<QueryMangasArgs>
+  >;
+  readingHistory?: Resolver<
     Array<ResolversTypes['ReadingHistory']>,
     ParentType,
     ContextType,
-    Partial<QueryGetReadingHistoryArgs>
+    RequireFields<QueryReadingHistoryArgs, 'userId'>
   >;
   searchManga?: Resolver<
     Array<ResolversTypes['Manga']>,
@@ -549,6 +785,13 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QuerySearchMangaArgs, 'query'>
   >;
+  user?: Resolver<
+    Maybe<ResolversTypes['User']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryUserArgs, 'id'>
+  >;
+  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryUsersArgs>>;
 };
 
 export type ReaderPreferencesResolvers<

@@ -42,8 +42,9 @@ describe('Library Domain Schema', () => {
     const queryType = schema.getQueryType();
     const fields = queryType?.getFields();
 
-    expect(fields?.getLibrary).toBeDefined();
-    expect(fields?.getReadingHistory).toBeDefined();
+    expect(fields?.library).toBeDefined();
+    expect(fields?.libraryEntry).toBeDefined();
+    expect(fields?.readingHistory).toBeDefined();
   });
 
   it('should extend Mutation with library operations', () => {
