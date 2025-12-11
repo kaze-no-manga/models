@@ -1,6 +1,6 @@
 {
   "name": "@kaze-no-manga/models",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "📘 Shared TypeScript types, Zod schemas, and GraphQL definitions for Kaze no Manga ecosystem",
   "type": "module",
   "scripts": {
