@@ -11,6 +11,7 @@
     "lint:lockfile": "lockfile-lint --path package-lock.json",
     "lint:engines": "ls-engines",
     "lint:publish": "publint --strict",
+    "pretest": "npm run build",
     "test": "vitest run",
     "pretest:coverage": "npm run build",
     "test:coverage": "vitest run --coverage",
