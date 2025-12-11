@@ -44,7 +44,7 @@ extend type Query {
   getProfile: User!
 }
 
-# Mutations  
+# Mutations
 extend type Mutation {
   updatePreferences(input: UserPreferencesInput!): User!
 }

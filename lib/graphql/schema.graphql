@@ -1,4 +1,18 @@
-# User Types
+# Generated schema - DO NOT EDIT MANUALLY
+# Run `npm run merge-schema` to regenerate
+
+# Base Schema - Root Types
+
+type Query {
+  _empty: String
+}
+
+type Mutation {
+  _empty: String
+}
+
+# User Domain - Authentication & Preferences
+
 type User {
   id: ID!
   email: String!
@@ -26,7 +40,48 @@ type ReaderPreferences {
   theme: Theme!
 }
 
-# Manga Types (MVP: single source)
+# Enums
+enum ImageWidth {
+  FIT
+  FULL
+}
+
+enum Theme {
+  LIGHT
+  DARK
+  AUTO
+}
+
+# Queries
+extend type Query {
+  getProfile: User!
+}
+
+# Mutations
+extend type Mutation {
+  updatePreferences(input: UserPreferencesInput!): User!
+}
+
+# Inputs
+input UserPreferencesInput {
+  notifications: NotificationPreferencesInput
+  reader: ReaderPreferencesInput
+}
+
+input NotificationPreferencesInput {
+  email: Boolean
+  push: Boolean
+  maxPerDay: Int
+}
+
+input ReaderPreferencesInput {
+  imageWidth: ImageWidth
+  spacing: Int
+  theme: Theme
+}
+
+# Content Domain - Manga & Chapters
+
 type Manga {
   id: ID!
   title: String!
@@ -44,7 +99,6 @@ type Manga {
   updatedAt: String!
 }
 
-# Chapter Types
 type Chapter {
   id: ID!
   mangaId: ID!
@@ -65,7 +119,43 @@ type ChapterImage {
   height: Int
 }
 
-# Library Types
+# Enums
+enum MangaStatus {
+  ONGOING
+  COMPLETED
+  HIATUS
+  CANCELLED
+}
+
+# Queries
+extend type Query {
+  searchManga(query: String!): [Manga!]!
+  getManga(id: ID!): Manga
+  getChapters(mangaId: ID!): [Chapter!]!
+}
+
+# Mutations
+extend type Mutation {
+  createManga(input: CreateMangaInput!): Manga!
+}
+
+# Inputs
+input CreateMangaInput {
+  title: String!
+  altTitles: [String!]!
+  description: String
+  coverImage: String
+  status: MangaStatus!
+  genres: [String!]!
+  authors: [String!]!
+  year: Int
+  sourceId: ID!
+  sourceMangaId: String!
+  sourceUrl: String!
+}
+
+# Library Domain - User's Reading Progress
+
 type LibraryEntry {
   userId: ID!
   mangaId: ID!
@@ -90,24 +180,6 @@ type ReadingHistory {
 }
 
 # Enums
-enum ImageWidth {
-  FIT
-  FULL
-}
-
-enum Theme {
-  LIGHT
-  DARK
-  AUTO
-}
-
-enum MangaStatus {
-  ONGOING
-  COMPLETED
-  HIATUS
-  CANCELLED
-}
-
 enum ReadingStatus {
   READING
   COMPLETED
@@ -116,42 +188,24 @@ enum ReadingStatus {
   ON_HOLD
 }
 
-# Inputs
-input CreateMangaInput {
-  title: String!
-  altTitles: [String!]!
-  description: String
-  coverImage: String
-  status: MangaStatus!
-  genres: [String!]!
-  authors: [String!]!
-  year: Int
-  sourceId: ID!
-  sourceMangaId: String!
-  sourceUrl: String!
-}
-
-input UpdateLibraryEntryInput {
-  status: ReadingStatus
-  rating: Int
-  notes: String
-}
-
 # Queries
-type Query {
-  searchManga(query: String!): [Manga!]!
-  getManga(id: ID!): Manga
-  getChapters(mangaId: ID!): [Chapter!]!
+extend type Query {
   getLibrary: [LibraryEntry!]!
   getReadingHistory(limit: Int): [ReadingHistory!]!
-  getProfile: User!
 }
 
 # Mutations
-type Mutation {
+extend type Mutation {
   addToLibrary(mangaId: ID!): LibraryEntry!
   updateLibraryEntry(mangaId: ID!, input: UpdateLibraryEntryInput!): LibraryEntry!
   removeFromLibrary(mangaId: ID!): Boolean!
   updateProgress(mangaId: ID!, chapterId: ID!): LibraryEntry!
   markChapterAsRead(chapterId: ID!): ReadingHistory!
+}
+
+# Inputs
+input UpdateLibraryEntryInput {
+  status: ReadingStatus
+  rating: Int
+  notes: String
 }

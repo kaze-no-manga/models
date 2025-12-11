@@ -52,5 +52,17 @@
         }
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["lib/graphql/types.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
+    }
+  ]
 }
