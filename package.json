@@ -16,14 +16,26 @@
     "pretest:coverage": "npm run clean",
     "test:coverage": "vitest run --coverage",
     "posttest:coverage": "coverage-badge-readme",
-    "clean": "rimraf --glob ./{lib,test}/**/*.{d.ts,js} ./vitest*.{d.ts,js}",
-    "prebuild": "npm run clean",
+    "clean": "rimraf --glob ./{lib,scripts,test}/**/*.{d.ts,js} ./vitest*.{d.ts,js}",
+    "prebuild": "npm run codegen",
     "build": "tsc",
+    "postbuild": "npm run merge-schema",
+    "precodegen": "npm run clean",
     "codegen": "graphql-codegen",
+    "merge-schema": "tsx scripts/merge-schema.ts",
     "prepare": "[ \"$CI\" = \"true\" ] || [ \"$GITHUB_ACTIONS\" = \"true\" ] && echo 'Skipping husky' && exit 0 || husky"
   },
-  "exports": {},
-  "files": [],
+  "exports": {
+    ".": "./lib/index.js",
+    "./graphql": "./lib/graphql/index.js",
+    "./graphql/domains": "./lib/graphql/domains/index.js",
+    "./graphql/user": "./lib/graphql/domains/user.graphql",
+    "./graphql/content": "./lib/graphql/domains/content.graphql",
+    "./graphql/library": "./lib/graphql/domains/library.graphql"
+  },
+  "files": [
+    "lib"
+  ],
   "engines": {
     "node": ">= 20"
   },
@@ -87,7 +99,6 @@
     "vitest": "^4.0.15"
   },
   "dependencies": {
-    "graphql": "^16.12.0",
-    "zod": "^4.1.13"
+    "graphql": "^16.12.0"
   }
 }

@@ -1,0 +1,68 @@
+# User Domain - Authentication & Preferences
+
+type User {
+  id: ID!
+  email: String!
+  name: String
+  avatar: String
+  preferences: UserPreferences!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type UserPreferences {
+  notifications: NotificationPreferences!
+  reader: ReaderPreferences!
+}
+
+type NotificationPreferences {
+  email: Boolean!
+  push: Boolean!
+  maxPerDay: Int!
+}
+
+type ReaderPreferences {
+  imageWidth: ImageWidth!
+  spacing: Int!
+  theme: Theme!
+}
+
+# Enums
+enum ImageWidth {
+  FIT
+  FULL
+}
+
+enum Theme {
+  LIGHT
+  DARK
+  AUTO
+}
+
+# Queries
+extend type Query {
+  getProfile: User!
+}
+
+# Mutations  
+extend type Mutation {
+  updatePreferences(input: UserPreferencesInput!): User!
+}
+
+# Inputs
+input UserPreferencesInput {
+  notifications: NotificationPreferencesInput
+  reader: ReaderPreferencesInput
+}
+
+input NotificationPreferencesInput {
+  email: Boolean
+  push: Boolean
+  maxPerDay: Int
+}
+
+input ReaderPreferencesInput {
+  imageWidth: ImageWidth
+  spacing: Int
+  theme: Theme
+}

@@ -1,0 +1,55 @@
+# Library Domain - User's Reading Progress
+
+type LibraryEntry {
+  userId: ID!
+  mangaId: ID!
+  status: ReadingStatus!
+  rating: Int
+  notes: String
+  currentChapterId: ID
+  currentChapterNumber: Float
+  lastReadAt: String
+  addedAt: String!
+  updatedAt: String!
+}
+
+type ReadingHistory {
+  id: ID!
+  userId: ID!
+  mangaId: ID!
+  chapterId: ID!
+  chapterNumber: Float!
+  completed: Boolean!
+  readAt: String!
+}
+
+# Enums
+enum ReadingStatus {
+  READING
+  COMPLETED
+  PLAN_TO_READ
+  DROPPED
+  ON_HOLD
+}
+
+# Queries
+extend type Query {
+  getLibrary: [LibraryEntry!]!
+  getReadingHistory(limit: Int): [ReadingHistory!]!
+}
+
+# Mutations
+extend type Mutation {
+  addToLibrary(mangaId: ID!): LibraryEntry!
+  updateLibraryEntry(mangaId: ID!, input: UpdateLibraryEntryInput!): LibraryEntry!
+  removeFromLibrary(mangaId: ID!): Boolean!
+  updateProgress(mangaId: ID!, chapterId: ID!): LibraryEntry!
+  markChapterAsRead(chapterId: ID!): ReadingHistory!
+}
+
+# Inputs
+input UpdateLibraryEntryInput {
+  status: ReadingStatus
+  rating: Int
+  notes: String
+}
