@@ -1,16 +1,15 @@
 # @kaze/models
 
-> Shared TypeScript types, Zod schemas, and GraphQL definitions for Kaze no Manga
+> Shared TypeScript types and GraphQL definitions for Kaze no Manga
 
 ## Overview
 
-This package contains all shared data models, type definitions, validation schemas, and GraphQL types used across the Kaze no Manga ecosystem.
+This package contains all shared data models, type definitions, and GraphQL types used across the Kaze no Manga ecosystem.
 
 ## Features
 
-- 📘 **TypeScript Interfaces**: Strongly-typed data models
-- ✅ **Zod Schemas**: Runtime validation and type inference
-- 🔷 **GraphQL Types**: Generated from SDL schemas
+- 📘 **TypeScript Interfaces**: Strongly-typed data models generated from GraphQL
+- 🔷 **GraphQL Types**: Complete schema definitions
 - 🔄 **Type Safety**: End-to-end type safety across all services
 
 ## Installation
@@ -21,7 +20,7 @@ npm install @kaze/models
 
 ## Usage
 
-### TypeScript Interfaces
+### TypeScript Types
 
 ```typescript
 import { Manga, Chapter, User, LibraryEntry } from '@kaze/models'
@@ -32,23 +31,6 @@ const manga: Manga = {
   altTitles: ['ワンピース'],
   // ...
 }
-```
-
-### Zod Schemas
-
-```typescript
-import { mangaSchema, chapterSchema } from '@kaze/models/schemas'
-
-// Validate data
-const result = mangaSchema.safeParse(data)
-if (result.success) {
-  console.log(result.data) // Typed as Manga
-} else {
-  console.error(result.error)
-}
-
-// Type inference
-type MangaInput = z.infer<typeof mangaSchema>
 ```
 
 ### GraphQL Types
@@ -100,44 +82,24 @@ interface UserPreferences {
 ```typescript
 interface Manga {
   id: string
+  slug: string
   title: string
   altTitles: string[]
   description?: string
-  coverImage?: string
+  cover?: string
   status: MangaStatus
   genres: string[]
   authors: string[]
   year?: number
-  sources: MangaSource[]
+  totalChapters?: number
+  isNsfw: boolean
+  sourceName: string            // Global source identifier
+  sourceId: string              // ID on the source platform
   createdAt: Date
   updatedAt: Date
 }
 
 type MangaStatus = 'ongoing' | 'completed' | 'hiatus' | 'cancelled'
-
-interface MangaSource {
-  sourceId: string              // Reference to Source entity
-  sourceMangaId: string         // ID on the source platform
-  url: string
-  priority: number              // For automatic source selection
-  lastChecked: Date
-}
-```
-
-### Source
-
-```typescript
-interface Source {
-  id: string
-  name: string                  // 'MangaPark', 'OmegaScans'
-  baseUrl: string
-  status: SourceStatus
-  priority: number
-  createdAt: Date
-  updatedAt: Date
-}
-
-type SourceStatus = 'active' | 'deprecated' | 'unavailable'
 ```
 
 ### Chapter
@@ -146,7 +108,6 @@ type SourceStatus = 'active' | 'deprecated' | 'unavailable'
 interface Chapter {
   id: string
   mangaId: string
-  sourceId: string
   number: number                // Supports decimals (5.5, 5.1)
   title?: string
   releaseDate?: Date
@@ -174,9 +135,8 @@ interface LibraryEntry {
   rating?: number               // 1-10
   notes?: string
   currentChapterId?: string
-  currentChapterNumber?: number
   lastReadAt?: Date
-  addedAt: Date
+  createdAt: Date
   updatedAt: Date
 }
 
@@ -197,25 +157,6 @@ interface ReadingHistory {
 }
 ```
 
-### Notification
-
-```typescript
-interface Notification {
-  id: string
-  userId: string
-  mangaId: string
-  chapterId: string
-  type: NotificationType
-  title: string
-  message: string
-  read: boolean
-  sentAt: Date
-  readAt?: Date
-}
-
-type NotificationType = 'new_chapter' | 'manga_completed' | 'source_changed'
-```
-
 ## GraphQL Schema
 
 ### Queries
@@ -225,15 +166,15 @@ type Query {
   # Manga
   searchManga(query: String!): [Manga!]!
   getManga(id: ID!): Manga
+  mangaBySlug(slug: String!): Manga
   getChapters(mangaId: ID!): [Chapter!]!
   
   # Library
-  getLibrary: [LibraryEntry!]!
-  getReadingHistory(limit: Int): [ReadingHistory!]!
+  library(userId: ID!): [LibraryEntry!]!
+  readingHistory(userId: ID!, limit: Int): [ReadingHistory!]!
   
   # User
   getProfile: User!
-  getNotifications(unreadOnly: Boolean): [Notification!]!
 }
 ```
 
@@ -247,41 +188,12 @@ type Mutation {
   removeFromLibrary(mangaId: ID!): Boolean!
   
   # Progress
-  updateProgress(mangaId: ID!, chapterId: ID!): LibraryEntry!
+  updateReadingProgress(mangaId: ID!, chapterId: ID!): LibraryEntry!
   markChapterAsRead(chapterId: ID!): ReadingHistory!
   
   # User
   updatePreferences(input: UserPreferencesInput!): User!
-  markNotificationAsRead(id: ID!): Notification!
 }
-```
-
-## Validation Schemas
-
-All models have corresponding Zod schemas for runtime validation:
-
-```typescript
-import { z } from 'zod'
-
-export const mangaSchema = z.object({
-  id: z.string().uuid(),
-  title: z.string().min(1).max(500),
-  altTitles: z.array(z.string()).default([]),
-  description: z.string().max(5000).optional(),
-  status: z.enum(['ongoing', 'completed', 'hiatus', 'cancelled']),
-  genres: z.array(z.string()),
-  authors: z.array(z.string()),
-  year: z.number().int().min(1900).max(2100).optional(),
-  // ...
-})
-
-export const chapterSchema = z.object({
-  id: z.string().uuid(),
-  mangaId: z.string().uuid(),
-  number: z.number().positive(),
-  title: z.string().max(500).optional(),
-  // ...
-})
 ```
 
 ## Code Generation
@@ -293,36 +205,17 @@ GraphQL types are automatically generated from SDL schemas:
 npm run codegen
 ```
 
-Configuration in `codegen.yml`:
-
-```yaml
-schema: './src/graphql/schema.graphql'
-generates:
-  ./src/graphql/types.ts:
-    plugins:
-      - typescript
-      - typescript-resolvers
-```
-
 ## Package Structure
 
 ```
 models/
-├── src/
-│   ├── types/
-│   │   ├── user.ts
-│   │   ├── manga.ts
-│   │   ├── chapter.ts
-│   │   ├── library.ts
-│   │   └── index.ts
-│   ├── schemas/
-│   │   ├── user.schema.ts
-│   │   ├── manga.schema.ts
-│   │   ├── chapter.schema.ts
-│   │   ├── library.schema.ts
-│   │   └── index.ts
+├── lib/
 │   ├── graphql/
-│   │   ├── schema.graphql
+│   │   ├── domains/
+│   │   │   ├── user.graphql
+│   │   │   ├── content.graphql
+│   │   │   └── library.graphql
+│   │   ├── schema.graphql (generated)
 │   │   ├── types.ts (generated)
 │   │   └── index.ts
 │   └── index.ts
@@ -346,7 +239,7 @@ npm run build
 # Run tests
 npm test
 
-# Publish (private)
+# Publish
 npm publish
 ```
 

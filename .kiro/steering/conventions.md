@@ -3,27 +3,23 @@
 ## Naming
 
 - **Interfaces**: PascalCase (e.g., `Manga`, `Chapter`)
-- **Schemas**: camelCase + `Schema` suffix (e.g., `mangaSchema`)
 - **GraphQL Types**: PascalCase (match interfaces)
 - **Files**: kebab-case.ts
 
 ## Type Patterns
 
 ```typescript
-// Interface
+// Interface (generated from GraphQL)
 export interface Manga {
   id: string
   title: string
 }
 
-// Zod Schema
-export const mangaSchema = z.object({
-  id: z.string().uuid(),
-  title: z.string().min(1),
-})
-
-// Type inference
-export type MangaInput = z.infer<typeof mangaSchema>
+// GraphQL Type
+type Manga {
+  id: ID!
+  title: String!
+}
 ```
 
 ## Versioning

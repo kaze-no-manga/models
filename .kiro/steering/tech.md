@@ -3,21 +3,18 @@
 ## Core Technologies
 
 - **Language**: TypeScript 5.x (strict mode)
-- **Validation**: Zod ^3.0.0
 - **GraphQL**: GraphQL ^16.0.0
 - **Codegen**: @graphql-codegen/cli ^5.0.0
-- **Build**: tsup
-- **Package**: NPM private (@kaze/models)
+- **Build**: TypeScript compiler
+- **Package**: NPM public (@kaze/models)
 
 ## Dependencies
 
 ### Production
-- `zod` - Runtime validation
 - `graphql` - GraphQL type system
 
 ### Development
 - `typescript`
-- `tsup`
 - `@graphql-codegen/cli`
 - `@graphql-codegen/typescript`
 - `@graphql-codegen/typescript-resolvers`
@@ -33,10 +30,9 @@
 ```json
 {
   "exports": {
-    ".": "./dist/index.js",
-    "./types": "./dist/types/index.js",
-    "./schemas": "./dist/schemas/index.js",
-    "./graphql": "./dist/graphql/index.js"
+    ".": "./lib/index.js",
+    "./graphql": "./lib/graphql/index.js",
+    "./graphql/domains": "./lib/graphql/domains/index.js"
   }
 }
 ```

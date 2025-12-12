@@ -8,7 +8,7 @@
 None (foundational package)
 
 ## Downstream
-- `backend`: All types, schemas, GraphQL
+- `backend`: All types, GraphQL
 - `web`: Types, GraphQL types
 - `mobile`: Types (manual sync to Dart)
 - `scraper`: Manga/Chapter types
