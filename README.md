@@ -1,5 +1,9 @@
 # @kaze/models
 
+[![npm version](https://img.shields.io/npm/v/@kaze-no-manga/models.svg?style=flat)](https://www.npmjs.com/package/@kaze-no-manga/models)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Coverage Badge](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat)
+
 > Shared TypeScript types and GraphQL definitions for Kaze no Manga
 
 ## Overview
