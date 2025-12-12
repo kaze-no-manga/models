@@ -2,8 +2,8 @@
   "name": "dev",
   "description": "Specialized agent for Kaze no Manga models package development",
   "prompt": "file://../steering/agent-prompt.md",
-  "tools": ["read", "write", "shell", "web_search", "web_fetch", "introspect", "thinking"],
-  "allowedTools": ["read", "shell", "web_search", "web_fetch", "introspect", "thinking"],
+  "tools": ["read", "write", "shell", "web_search", "web_fetch", "introspect", "thinking", "code"],
+  "allowedTools": ["read", "shell", "web_search", "web_fetch", "introspect", "thinking", "code"],
   "toolsSettings": {
     "write": {
       "allowedPaths": [".kiro/**", "lib/**", "test/**", "*.md"]
